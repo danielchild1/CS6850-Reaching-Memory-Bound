@@ -10,8 +10,8 @@ using std::vector;
 
 const uint64_t SIZE = 1024 * 1024; // * 1024 * 100ULL; // 100 GB!
 unsigned int threadsSupported = std::thread::hardware_concurrency();
-const uint64_t NUM_ROWS = (1024*1024);
-const uint64_t NUM_COLS = (1024*100);
+const uint64_t NUM_ROWS = (1024 * 1024);
+const uint64_t NUM_COLS = (1024 * 100);
 
 uint8_t *arr{nullptr};
 uint8_t *result{0};
@@ -72,7 +72,8 @@ void workForCrew(uint8_t threadID)
     }
 }
 
-void workForCrewCasting(uint8_t threadID){
+void workForCrewCasting(uint8_t threadID)
+{
     while (workerNumber < threadsSupported * 10)
     {
         uint64_t startIndex, endIndex, localResult = 0;
@@ -102,8 +103,9 @@ void workForCrewCasting(uint8_t threadID){
     }
 }
 
-void workForCrewLoopUnrolling(uint8_t threadID){
-     while (workerNumber < threadsSupported * 10)
+void workForCrewLoopUnrolling(uint8_t threadID)
+{
+    while (workerNumber < threadsSupported * 10)
     {
         uint64_t startIndex, endIndex, localResult = 0;
         unsigned int localWorkerNumber = workerNumber;
@@ -116,16 +118,16 @@ void workForCrewLoopUnrolling(uint8_t threadID){
 
         if (localWorkerNumber < threadsSupported * 10)
         {
-            for (uint64_t i = startIndex; i < endIndex; i+=4)
+            for (uint64_t i = startIndex; i < endIndex; i += 4)
             {
                 if (i % (1024 * 1024UL) == 0)
                 {
                     printf("threadID %u:, i is %lu\n", threadID, i);
                 }
                 localResult += (uint64_t)arr[i];
-                localResult += (uint64_t)arr[i+1];
-                localResult += (uint64_t)arr[i+2];
-                localResult += (uint64_t)arr[i+3];
+                localResult += (uint64_t)arr[i + 1];
+                localResult += (uint64_t)arr[i + 2];
+                localResult += (uint64_t)arr[i + 3];
             }
         }
         else
@@ -135,8 +137,9 @@ void workForCrewLoopUnrolling(uint8_t threadID){
     }
 }
 
-void workForCrewLoopUnrolling20(uint8_t threadID){
-     while (workerNumber < threadsSupported * 10)
+void workForCrewLoopUnrolling20(uint8_t threadID)
+{
+    while (workerNumber < threadsSupported * 10)
     {
         uint64_t startIndex, endIndex, localResult = 0;
         unsigned int localWorkerNumber = workerNumber;
@@ -149,32 +152,32 @@ void workForCrewLoopUnrolling20(uint8_t threadID){
 
         if (localWorkerNumber < threadsSupported * 10)
         {
-            for (uint64_t i = startIndex; i < endIndex; i+=20)
+            for (uint64_t i = startIndex; i < endIndex; i += 20)
             {
                 if (i % (1024 * 1024UL) == 0)
                 {
                     printf("threadID %u:, i is %lu\n", threadID, i);
                 }
                 localResult += (uint64_t)arr[i];
-                localResult += (uint64_t)arr[i+1];
-                localResult += (uint64_t)arr[i+2];
-                localResult += (uint64_t)arr[i+3];
-                localResult += (uint64_t)arr[i+4];
-                localResult += (uint64_t)arr[i+5];
-                localResult += (uint64_t)arr[i+6];
-                localResult += (uint64_t)arr[i+7];
-                localResult += (uint64_t)arr[i+8];
-                localResult += (uint64_t)arr[i+9];
-                localResult += (uint64_t)arr[i+10];
-                localResult += (uint64_t)arr[i+11];
-                localResult += (uint64_t)arr[i+12];
-                localResult += (uint64_t)arr[i+13];
-                localResult += (uint64_t)arr[i+14];
-                localResult += (uint64_t)arr[i+15];
-                localResult += (uint64_t)arr[i+16];
-                localResult += (uint64_t)arr[i+17];
-                localResult += (uint64_t)arr[i+18];
-                localResult += (uint64_t)arr[i+19];
+                localResult += (uint64_t)arr[i + 1];
+                localResult += (uint64_t)arr[i + 2];
+                localResult += (uint64_t)arr[i + 3];
+                localResult += (uint64_t)arr[i + 4];
+                localResult += (uint64_t)arr[i + 5];
+                localResult += (uint64_t)arr[i + 6];
+                localResult += (uint64_t)arr[i + 7];
+                localResult += (uint64_t)arr[i + 8];
+                localResult += (uint64_t)arr[i + 9];
+                localResult += (uint64_t)arr[i + 10];
+                localResult += (uint64_t)arr[i + 11];
+                localResult += (uint64_t)arr[i + 12];
+                localResult += (uint64_t)arr[i + 13];
+                localResult += (uint64_t)arr[i + 14];
+                localResult += (uint64_t)arr[i + 15];
+                localResult += (uint64_t)arr[i + 16];
+                localResult += (uint64_t)arr[i + 17];
+                localResult += (uint64_t)arr[i + 18];
+                localResult += (uint64_t)arr[i + 19];
             }
         }
         else
@@ -259,22 +262,26 @@ void columnMajorWork(uint8_t threadID)
 {
     uint64_t localResult = 0;
 
-  printf("I am thread %u\n", threadID);
+    printf("I am thread %u\n", threadID);
 
-  // Assume that every thread starts its second dimension index at 0 to its max
-  // Each thread starts its first dimension based on math
-
-  uint64_t startIndex = threadID * NUM_ROWS / threadsSupported;
-  uint64_t endIndex = (threadID + 1) * NUM_ROWS / threadsSupported;
-  for (uint64_t i = startIndex; i < endIndex; i++) {
-    if (i % (1024*4UL) == 0) {
-      printf("threadID %u:, i is %lu\n", threadID, i);
+    // Assume that every thread starts its second dimension index at 0 to its max
+    // Each thread starts its first dimension based on math
+    uint16_t shrinkSize = 128;
+    uint64_t startCol = (threadID * NUM_COLS / shrinkSize) / threadsSupported;
+    uint64_t endCol = ((threadID + 1) * NUM_COLS / shrinkSize) / threadsSupported;
+    printf("threadID %u, working betweeen columns [%lu through %lu]\n", threadID, startCol, endCol);
+    for (uint64_t j = startCol; j < endCol; j++)
+    { // horizontal row loop
+        if (j % (1024 * 4UL) == 0)
+        {
+            printf("threadID %u:, j is %lu\n", threadID, j);
+        }
+        for (uint64_t i = 0; i < NUM_ROWS; i++)
+        { // vertical column loop
+            //printf("ThreadID: %u, I am now computing arr[%lu][%lu] at address %p\n", threadID, i, j, &(arr[i * NUM_COLS + j]));
+            localResult += arr[i * NUM_COLS + j];
+        }
     }
-    for (uint64_t j = 0; j < NUM_COLS; j++) {
-    //  printf("ThreadID: %u, I am now computing arr[%lu][%lu] at address %p\n", threadID, i, j, &(arr[i * NUM_COLS + j]));
-      localResult += arr[i * NUM_COLS + j];
-    }
-  }
     // MUTEX
     myMutex.lock();
     // Run critical region of code
@@ -388,7 +395,6 @@ int main()
     printf("worker Crew casting:          %f\n", times[5]);
     printf("Loop unrolling 4:             %f\n", times[6]);
     printf("Loop unrolling 20:            %f\n", times[7]);
-
 
     // printf("Master thread, child threads are complete!\n");
 
