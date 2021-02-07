@@ -8,7 +8,7 @@ using std::mutex;
 using std::thread;
 using std::vector;
 
-const uint64_t SIZE = 1024 * 1024; // * 1024 * 100ULL; // 100 GB!
+const uint64_t SIZE = 1024 * 1024 * 1024 * 100ULL; // 100 GB!
 unsigned int threadsSupported = std::thread::hardware_concurrency();
 const uint64_t NUM_ROWS = (1024 * 1024);
 const uint64_t NUM_COLS = (1024 * 100);
