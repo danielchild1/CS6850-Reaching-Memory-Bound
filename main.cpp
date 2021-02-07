@@ -56,11 +56,41 @@ void workForCrew(uint8_t threadID)
         {
             for (uint64_t i = startIndex; i < endIndex; i++)
             {
-                if (i % (1024 * 1024 * 1024UL) == 0)
+                if (i % (1024 * 1024UL) == 0)
                 {
                     printf("threadID %u:, i is %lu\n", threadID, i);
                 }
                 localResult += arr[i];
+            }
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
+void workForCrewCasting(uint8_t threadID){
+    while (workerNumber < threadsSupported * 10)
+    {
+        uint64_t startIndex, endIndex, localResult = 0;
+        unsigned int localWorkerNumber = workerNumber;
+
+        myMutex.lock();
+        startIndex = workerNumber * SIZE / threadsSupported * 10;
+        endIndex = (workerNumber + 1) * SIZE / threadsSupported * 10;
+        workerNumber++;
+        myMutex.unlock();
+
+        if (localWorkerNumber < threadsSupported * 10)
+        {
+            for (uint64_t i = startIndex; i < endIndex; i++)
+            {
+                if (i % (1024 * 1024UL) == 0)
+                {
+                    printf("threadID %u:, i is %lu\n", threadID, i);
+                }
+                localResult += (uint64_t)arr[i];
             }
         }
         else
@@ -86,6 +116,22 @@ void workerCrewSetup(thread *threads)
 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::nano> running_time = end - start;
+    times.push_back(running_time.count());
+
+    start = std::chrono::high_resolution_clock::now();
+
+    // // FORK-JOIN MODEL
+    for (int i = 0; i < threadsSupported; i++)
+    {
+        threads[i] = thread(workForCrewCasting, i);
+    }
+    for (int i = 0; i < threadsSupported; i++)
+    {
+        threads[i].join();
+    }
+
+    end = std::chrono::high_resolution_clock::now();
+    running_time = end - start;
     times.push_back(running_time.count());
 }
 
@@ -206,12 +252,13 @@ int main()
     multiColumnMajor(threads);
     workerCrewSetup(threads);
 
-    printf("\n\nTask                                 Time\n");
+    printf("\n\nTask                        Time\n");
     printf("Single thread row major:      %f\n", times[0]);
     printf("Single thread column major:   %f\n", times[1]);
     printf("Multi-threaded row major:     %f\n", times[2]);
     printf("Multi-threaded column major:  %f\n", times[3]);
     printf("Worker Crew:                  %f\n", times[4]);
+    printf("worker Crew casting:          %f\n", times[5]);
 
     // printf("Master thread, child threads are complete!\n");
 
