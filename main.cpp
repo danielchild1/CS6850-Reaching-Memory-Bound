@@ -8,7 +8,7 @@ using std::mutex;
 using std::thread;
 using std::vector;
 
-const uint64_t SIZE = 1024 * 1024 * 1024 * 100ULL; // 100 GB!
+const uint64_t SIZE = 1024 * 1024;// * 1024 * 100ULL; // 100 GB!
 unsigned int threadsSupported = std::thread::hardware_concurrency();
 
 uint8_t *arr{nullptr};
@@ -17,7 +17,7 @@ mutex myMutex;
 vector<double> times;
 
 
-void doWork(uint8_t threadID)
+void rowMajorWork(uint8_t threadID)
 {
     uint64_t localResult = 0;
 
@@ -39,6 +39,27 @@ void doWork(uint8_t threadID)
     myMutex.unlock();
 }
 
+void columnMajorWork(uint64_t threadID){
+    uint64_t const numColumns = SIZE/threadsSupported;
+    uint64_t localResult = 0;
+
+    printf("I am thread %lu\n", threadID);
+    for (uint64_t i = threadID; i < SIZE; i+= numColumns)
+    {
+        if (i % (1024 * 1024 * 1024UL) == 0)
+        {
+            printf("threadID %lu:, i is %lu\n", threadID, i);
+        }
+        localResult += arr[i];
+    }
+    // MUTEX
+    myMutex.lock();
+    // Run critical region of code
+    result += localResult;
+    myMutex.unlock();
+
+}
+
 void multiRowMajor(thread *threads)
 {
     auto start = std::chrono::high_resolution_clock::now();
@@ -47,7 +68,27 @@ void multiRowMajor(thread *threads)
     // // FORK-JOIN MODEL
     for (int i = 0; i < threadsSupported; i++)
     {
-        threads[i] = thread(doWork, i);
+        threads[i] = thread(rowMajorWork, i);
+    }
+    for (int i = 0; i < threadsSupported; i++)
+    {
+        threads[i].join();
+    }
+
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::nano> running_time = end - start;
+    times.push_back(running_time.count());
+}
+
+void multiColumnMajor(thread *threads){
+     auto start = std::chrono::high_resolution_clock::now();
+
+
+    // // FORK-JOIN MODEL
+    for (int i = 0; i < threadsSupported; i++)
+    {
+        threads[i] = thread(columnMajorWork, i);
     }
     for (int i = 0; i < threadsSupported; i++)
     {
@@ -70,7 +111,7 @@ void singleThreadRow()
     {
         if (r % (1024 * 1024 * 1024UL) == 0)
         {
-            printf("i is %lu\n", r);
+            printf("Row major: i is %lu\n", r);
         }
         localResult += arr[r];
     }
@@ -92,7 +133,7 @@ void singleThreadColumn()
         {
             if (r % (1024 * 1024 * 1024UL) == 0)
             {
-                printf("i is %lu\n", r);
+                printf("Column major: i is %lu\n", r);
             }
             localResult += arr[r];
         }
@@ -116,6 +157,7 @@ int main()
     singleThreadRow();
     singleThreadColumn();
     multiRowMajor(threads);
+    multiColumnMajor(threads);
 
 
 
@@ -126,6 +168,8 @@ int main()
     printf("Task                                Time\n");
     printf("Single thread row major:    %f\n", times[0]);
     printf("Single thread column major: %f\n", times[1]);
+    printf("Multi-threaded row major:   %f\n", times[2]);
+    printf("Multi-threaded column major: %f\n", times[4]);
 
 
     
