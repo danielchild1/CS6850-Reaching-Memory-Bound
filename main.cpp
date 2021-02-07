@@ -10,6 +10,8 @@ using std::vector;
 
 const uint64_t SIZE = 1024 * 1024; // * 1024 * 100ULL; // 100 GB!
 unsigned int threadsSupported = std::thread::hardware_concurrency();
+const uint64_t NUM_ROWS = (1024*1024);
+const uint64_t NUM_COLS = (1024*100);
 
 uint8_t *arr{nullptr};
 uint8_t *result{0};
@@ -253,20 +255,26 @@ void workerCrewSetup(thread *threads)
     times.push_back(running_time.count());
 }
 
-void columnMajorWork(uint64_t threadID)
+void columnMajorWork(uint8_t threadID)
 {
-    uint64_t const numColumns = SIZE / threadsSupported;
     uint64_t localResult = 0;
 
-    printf("I am thread %lu\n", threadID);
-    for (uint64_t i = threadID; i < SIZE; i += numColumns)
-    {
-        if (i % (1024 * 1024 * 1024UL) == 0)
-        {
-            printf("threadID %lu:, i is %lu\n", threadID, i);
-        }
-        localResult += arr[i];
+  printf("I am thread %u\n", threadID);
+
+  // Assume that every thread starts its second dimension index at 0 to its max
+  // Each thread starts its first dimension based on math
+
+  uint64_t startIndex = threadID * NUM_ROWS / threadsSupported;
+  uint64_t endIndex = (threadID + 1) * NUM_ROWS / threadsSupported;
+  for (uint64_t i = startIndex; i < endIndex; i++) {
+    if (i % (1024*4UL) == 0) {
+      printf("threadID %u:, i is %lu\n", threadID, i);
     }
+    for (uint64_t j = 0; j < NUM_COLS; j++) {
+    //  printf("ThreadID: %u, I am now computing arr[%lu][%lu] at address %p\n", threadID, i, j, &(arr[i * NUM_COLS + j]));
+      localResult += arr[i * NUM_COLS + j];
+    }
+  }
     // MUTEX
     myMutex.lock();
     // Run critical region of code
@@ -340,14 +348,14 @@ void singleThreadColumn()
     for (int c = 0; c < SIZE; c++)
     {
 
-        for (uint64_t r = 0; r < (SIZE/2); r++)
+        for (uint64_t r = 0; r < NUM_COLS; r++)
 
         {
             if (r % (1024 * 1024 * 1024UL) == 0)
             {
                 printf("Column major: i is %lu\n", r);
             }
-            localResult += arr[r * (SIZE/2) + c]; //arr[r * (SIZE/2) + c]
+            localResult += arr[c * NUM_COLS + r]; //arr[r * (SIZE/2) + c]
         }
     }
     auto end = std::chrono::high_resolution_clock::now();
