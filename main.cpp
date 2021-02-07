@@ -169,7 +169,7 @@ int main()
     printf("Single thread row major:    %f\n", times[0]);
     printf("Single thread column major: %f\n", times[1]);
     printf("Multi-threaded row major:   %f\n", times[2]);
-    printf("Multi-threaded column major: %f\n", times[4]);
+    printf("Multi-threaded column major: %f\n", times[3]);
 
 
     
