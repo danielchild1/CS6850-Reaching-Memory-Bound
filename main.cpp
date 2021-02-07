@@ -340,13 +340,14 @@ void singleThreadColumn()
     for (int c = 0; c < SIZE; c++)
     {
 
-        for (uint64_t r = 0 + c; r < SIZE; r += 10)
+        for (uint64_t r = 0; r < (SIZE/2); r++)
+
         {
             if (r % (1024 * 1024 * 1024UL) == 0)
             {
                 printf("Column major: i is %lu\n", r);
             }
-            localResult += arr[r];
+            localResult += arr[r * (SIZE/2) + c]; //arr[r * (SIZE/2) + c]
         }
     }
     auto end = std::chrono::high_resolution_clock::now();
