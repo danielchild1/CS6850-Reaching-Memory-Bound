@@ -339,6 +339,7 @@ void singleThreadColumn()
 
 void startArray()
 {
+    printf("Inside start array");
     while (workerNumber < threadsSupported * 10)
     {
         uint64_t startIndex, endIndex;
@@ -357,6 +358,7 @@ void startArray()
             {
                 arr[i] = 2;
             }
+            printf("finished last for loop inside of if statemnt");
         }
         else
         {
@@ -375,6 +377,7 @@ int main()
 
     // Create thread tracking objets, these are NOT threads themselves
     thread *threads = new thread[threadsSupported];
+    printf("made it to thread init");
     // initializing the array
     for (int i = 0; i < threadsSupported; i++)
     {
