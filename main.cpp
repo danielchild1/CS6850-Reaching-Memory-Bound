@@ -202,7 +202,7 @@ void workerCrewSetup(thread *threads)
     }
 
     auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::nano> running_time = end - start;
+    std::chrono::duration<double, std::milli> running_time = end - start;
     times.push_back(running_time.count());
     workerNumber = 0;
 
@@ -307,7 +307,7 @@ void multiRowMajor(thread *threads)
     }
 
     auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::nano> running_time = end - start;
+    std::chrono::duration<double, std::milli> running_time = end - start;
     times.push_back(running_time.count());
 }
 
@@ -326,7 +326,7 @@ void multiColumnMajor(thread *threads)
     }
 
     auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::nano> running_time = end - start;
+    std::chrono::duration<double, std::milli> running_time = end - start;
     times.push_back(running_time.count());
 }
 
@@ -346,7 +346,7 @@ void singleThreadRow()
     }
 
     auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::nano> running_time = end - start;
+    std::chrono::duration<double, std::milli> running_time = end - start;
     times.push_back(running_time.count());
 }
 
@@ -369,12 +369,33 @@ void singleThreadColumn()
         }
     }
     auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::nano> running_time = end - start;
+    std::chrono::duration<double, std::milli> running_time = end - start;
     times.push_back(running_time.count());
+}
+
+void startArray()
+{
+    while (workerNumber < threadsSupported * 10)
+    {
+        uint64_t startIndex, endIndex, localResult = 0;
+        unsigned int localWorkerNumber = workerNumber;
+
+        myMutex.lock();
+        startIndex = workerNumber * SIZE / threadsSupported * 10;
+        endIndex = (workerNumber + 1) * SIZE / threadsSupported * 10;
+        workerNumber++;
+        myMutex.unlock();
+
+        for (int i = startIndex; i < endIndex; i++)
+        {
+            arr[i] = (uint8_t)6850;
+        }
+    }
 }
 
 int main()
 {
+
     printf("This machine has %d cores.\n", threadsSupported);
 
     arr = new uint8_t[SIZE];
@@ -382,6 +403,15 @@ int main()
 
     // Create thread tracking objets, these are NOT threads themselves
     thread *threads = new thread[threadsSupported];
+    // initializing the array
+    for (int i = 0; i < threadsSupported; i++)
+    {
+        threads[i] = thread(startArray);
+    }
+    for (int i = 0; i < threadsSupported; i++)
+    {
+        threads[i].join();
+    }
 
     singleThreadRow();
     singleThreadColumn();
@@ -399,11 +429,7 @@ int main()
     printf("Loop unrolling 4:             %f\n", times[6]);
     printf("Loop unrolling 20:            %f\n", times[7]);
 
-    // printf("Master thread, child threads are complete!\n");
-
-    // //uint64_t result = 0;
-    // //for (uint64_t i = 0; i < SIZE; i++) {
-    // //}
+    
     delete[] threads;
     delete[] arr;
     return 0;
