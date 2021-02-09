@@ -3,6 +3,7 @@
 #include <mutex>
 #include <vector>
 #include <chrono>
+#include <inttypes.h>
 
 using std::mutex;
 using std::thread;
@@ -23,11 +24,12 @@ void rowMajorWork(uint8_t threadID)
 {
     uint64_t localResult = 0;
 
-    uint64_t startIndex = threadID * SIZE / threadsSupported;
-    uint64_t endIndex = (threadID + 1) * SIZE / threadsSupported;
-    for (uint64_t i = startIndex; i < endIndex; i++)
+    uint64_t startIndex = threadID * NUM_ROWS / threadsSupported;
+    uint64_t endIndex = (threadID + 1) * NUM_ROWS / threadsSupported;
+    for (uint64_t r = startIndex; r < endIndex; r++)
     {
-        localResult += arr[i];
+        for (uint64_t c = 0; c < NUM_COLS; c++)
+            localResult += arr[r * NUM_COLS + c];
     }
     // MUTEX
     myMutex.lock();
@@ -41,19 +43,21 @@ void workForCrew(uint8_t threadID)
     while (workerNumber < threadsSupported * 10)
     {
         uint64_t startIndex, endIndex, localResult = 0;
-        unsigned int localWorkerNumber = workerNumber;
+        unsigned int localWorkerNumber;
 
         myMutex.lock();
-        startIndex = workerNumber * SIZE / (threadsSupported * 10);
-        endIndex = (workerNumber + 1) * SIZE / (threadsSupported * 10);
-        workerNumber++;
+        localWorkerNumber = workerNumber++;
         myMutex.unlock();
+
+        startIndex = localWorkerNumber * NUM_ROWS / (threadsSupported * 10);
+        endIndex = (localWorkerNumber + 1) * NUM_ROWS / (threadsSupported * 10);
 
         if (localWorkerNumber < threadsSupported * 10)
         {
-            for (uint64_t i = startIndex; i < endIndex; i++)
+            for (uint64_t r = startIndex; r < endIndex; r++)
             {
-                localResult += arr[i];
+                for (uint64_t c = 0; c < NUM_COLS; c++)
+                    localResult += arr[r * NUM_COLS + c];
             }
         }
         else
@@ -68,19 +72,33 @@ void workForCrewCasting(uint8_t threadID)
     while (workerNumber < threadsSupported * 10)
     {
         uint64_t startIndex, endIndex, localResult = 0;
-        unsigned int localWorkerNumber = workerNumber;
+        unsigned int localWorkerNumber;
 
         myMutex.lock();
-        startIndex = workerNumber * SIZE / (threadsSupported * 10);
-        endIndex = (workerNumber + 1) * SIZE / (threadsSupported * 10);
-        workerNumber++;
+        localWorkerNumber = workerNumber++;
         myMutex.unlock();
+
+        startIndex = localWorkerNumber * SIZE / (threadsSupported * 10);
+        endIndex = (localWorkerNumber + 1) * SIZE / (threadsSupported * 10);
 
         if (localWorkerNumber < threadsSupported * 10)
         {
-            for (uint64_t i = startIndex; i < endIndex; i++)
+            for (uint16_t r = 0; r < 16; r += 8)
             {
-                localResult += (uint64_t)arr[i];
+
+                // Make a copy of 8 bytes.
+                uint64_t buffer = *(reinterpret_cast<uint64_t *>(&arr[i]));
+
+                uint8_t *bufferArray = reinterpret_cast<uint8_t *>(&buffer);
+                printf("Read 8 bytes\n");
+                printf("%" PRId8 "\n", bufferArray[0]);
+                printf("%" PRId8 "\n", bufferArray[1]);
+                printf("%" PRId8 "\n", bufferArray[2]);
+                printf("%" PRId8 "\n", bufferArray[3]);
+                printf("%" PRId8 "\n", bufferArray[4]);
+                printf("%" PRId8 "\n", bufferArray[5]);
+                printf("%" PRId8 "\n", bufferArray[6]);
+                printf("%" PRId8 "\n", bufferArray[7]);
             }
         }
         else
@@ -299,7 +317,7 @@ void multiColumnMajor(thread *threads)
 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> running_time = end - start;
-    times.push_back(running_time.count());
+    times.push_back(running_time.count() * 128);
 }
 
 void singleThreadRow()
@@ -308,9 +326,14 @@ void singleThreadRow()
 
     uint64_t localResult = 0;
 
-    for (uint64_t r = 0; r < SIZE; r++)
+    for (uint8_t r = 0; r < NUM_ROWS; r++)
     {
-        localResult += arr[r];
+
+        for (uint64_t c = 0; c < NUM_COLS; c++)
+
+        {
+            localResult += arr[r * NUM_COLS + c];
+        }
     }
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -323,13 +346,13 @@ void singleThreadColumn()
     auto start = std::chrono::high_resolution_clock::now();
     uint64_t localResult = 0;
 
-    for (int c = 0; c < NUM_ROWS; c++)
+    for (uint8_t c = 0; c < NUM_COLS; c++)
     {
 
-        for (uint64_t r = 0; r < NUM_COLS; r++)
+        for (uint64_t r = 0; r < NUM_ROWS; r++)
 
         {
-            localResult += arr[c * NUM_COLS + r]; //arr[r * (SIZE/2) + c]
+            localResult += arr[r * NUM_COLS + c];
         }
     }
     auto end = std::chrono::high_resolution_clock::now();
