@@ -339,18 +339,18 @@ void singleThreadColumn()
 
 void startArray()
 {
-    printf("Inside start array");
+    printf("Inside start array\n");
     while (workerNumber < threadsSupported * 10)
     {
         uint64_t startIndex, endIndex;
         unsigned localWorkerNumber;
 
         myMutex.lock();
-        startIndex = workerNumber * SIZE / threadsSupported * 10;
-        endIndex = (workerNumber + 1) * SIZE / threadsSupported * 10;
-        localWorkerNumber = workerNumber;
-        workerNumber++;
+        localWorkerNumber = workerNumber++;
         myMutex.unlock();
+
+        startIndex = localWorkerNumber * SIZE / threadsSupported * 10;
+        endIndex = (localWorkerNumber + 1) * SIZE / threadsSupported * 10;
 
         if (localWorkerNumber < threadsSupported * 10)
         {
@@ -358,7 +358,7 @@ void startArray()
             {
                 arr[i] = 2;
             }
-            printf("finished last for loop inside of if statemnt");
+            printf("finished last for loop inside of if statemnt\n");
         }
         else
         {
@@ -388,6 +388,7 @@ int main()
     {
         threads[i].join();
     }
+    workerNumber = 0;
 
     printf("\n\nTask                        Time\n");
     singleThreadRow();
