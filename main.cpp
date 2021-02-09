@@ -23,15 +23,10 @@ void rowMajorWork(uint8_t threadID)
 {
     uint64_t localResult = 0;
 
-    printf("I am thread %u\n", threadID);
     uint64_t startIndex = threadID * SIZE / threadsSupported;
     uint64_t endIndex = (threadID + 1) * SIZE / threadsSupported;
     for (uint64_t i = startIndex; i < endIndex; i++)
     {
-        if (i % (1024 * 1024 * 1024UL) == 0)
-        {
-            printf("threadID %u:, i is %lu\n", threadID, i);
-        }
         localResult += arr[i];
     }
     // MUTEX
@@ -58,10 +53,6 @@ void workForCrew(uint8_t threadID)
         {
             for (uint64_t i = startIndex; i < endIndex; i++)
             {
-                if (i % (1024 * 1024UL) == 0)
-                {
-                    printf("threadID %u:, i is %lu\n", threadID, i);
-                }
                 localResult += arr[i];
             }
         }
@@ -89,10 +80,6 @@ void workForCrewCasting(uint8_t threadID)
         {
             for (uint64_t i = startIndex; i < endIndex; i++)
             {
-                if (i % (1024 * 1024UL) == 0)
-                {
-                    printf("threadID %u:, i is %lu\n", threadID, i);
-                }
                 localResult += (uint64_t)arr[i];
             }
         }
@@ -120,10 +107,6 @@ void workForCrewLoopUnrolling(uint8_t threadID)
         {
             for (uint64_t i = startIndex; i < endIndex; i += 4)
             {
-                if (i % (1024 * 1024UL) == 0)
-                {
-                    printf("threadID %u:, i is %lu\n", threadID, i);
-                }
                 localResult += (uint64_t)arr[i];
                 localResult += (uint64_t)arr[i + 1];
                 localResult += (uint64_t)arr[i + 2];
@@ -154,10 +137,6 @@ void workForCrewLoopUnrolling20(uint8_t threadID)
         {
             for (uint64_t i = startIndex; i < endIndex; i += 20)
             {
-                if (i % (1024 * 1024UL) == 0)
-                {
-                    printf("threadID %u:, i is %lu\n", threadID, i);
-                }
                 localResult += (uint64_t)arr[i];
                 localResult += (uint64_t)arr[i + 1];
                 localResult += (uint64_t)arr[i + 2];
@@ -265,20 +244,14 @@ void columnMajorWork(uint8_t threadID)
 {
     uint64_t localResult = 0;
 
-    printf("I am thread %u\n", threadID);
 
     // Assume that every thread starts its second dimension index at 0 to its max
     // Each thread starts its first dimension based on math
     uint16_t shrinkSize = 128;
     uint64_t startCol = (threadID * NUM_COLS / shrinkSize) / threadsSupported;
     uint64_t endCol = ((threadID + 1) * NUM_COLS / shrinkSize) / threadsSupported;
-    printf("threadID %u, working betweeen columns [%lu through %lu]\n", threadID, startCol, endCol);
     for (uint64_t j = startCol; j < endCol; j++)
     { // horizontal row loop
-        if (j % (1024 * 4UL) == 0)
-        {
-            printf("threadID %u:, j is %lu\n", threadID, j);
-        }
         for (uint64_t i = 0; i < NUM_ROWS; i++)
         { // vertical column loop
             //printf("ThreadID: %u, I am now computing arr[%lu][%lu] at address %p\n", threadID, i, j, &(arr[i * NUM_COLS + j]));
@@ -338,10 +311,6 @@ void singleThreadRow()
 
     for (uint64_t r = 0; r < SIZE; r++)
     {
-        if (r % (1024 * 1024 * 1024UL) == 0)
-        {
-            printf("Row major: i is %lu\n", r);
-        }
         localResult += arr[r];
     }
 
@@ -361,10 +330,6 @@ void singleThreadColumn()
         for (uint64_t r = 0; r < NUM_COLS; r++)
 
         {
-            if (r % (1024 * 1024 * 1024UL) == 0)
-            {
-                printf("Column major: i is %lu\n", r);
-            }
             localResult += arr[c * NUM_COLS + r]; //arr[r * (SIZE/2) + c]
         }
     }
@@ -378,7 +343,6 @@ void startArray()
     while (workerNumber < threadsSupported * 10)
     {
         uint64_t startIndex, endIndex, localResult = 0;
-        unsigned int localWorkerNumber = workerNumber;
 
         myMutex.lock();
         startIndex = workerNumber * SIZE / threadsSupported * 10;
@@ -386,9 +350,9 @@ void startArray()
         workerNumber++;
         myMutex.unlock();
 
-        for (int i = startIndex; i < endIndex; i++)
+        for (uint64_t i = startIndex; i < endIndex; i++)
         {
-            arr[i] = (uint8_t)6850;
+            arr[i] = 2;
         }
     }
 }
