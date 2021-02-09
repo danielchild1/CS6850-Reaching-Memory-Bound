@@ -341,17 +341,26 @@ void startArray()
 {
     while (workerNumber < threadsSupported * 10)
     {
-        uint64_t startIndex, endIndex, localResult = 0;
+        uint64_t startIndex, endIndex;
+        unsigned localWorkerNumber;
 
         myMutex.lock();
         startIndex = workerNumber * SIZE / threadsSupported * 10;
         endIndex = (workerNumber + 1) * SIZE / threadsSupported * 10;
+        localWorkerNumber = workerNumber;
         workerNumber++;
         myMutex.unlock();
 
-        for (uint64_t i = startIndex; i < endIndex; i++)
+        if (localWorkerNumber < threadsSupported * 10)
         {
-            arr[i] = 2;
+            for (uint64_t i = startIndex; i < endIndex; i++)
+            {
+                arr[i] = 2;
+            }
+        }
+        else
+        {
+            break;
         }
     }
 }
