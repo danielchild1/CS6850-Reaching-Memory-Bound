@@ -373,7 +373,7 @@ int main()
     printf("This machine has %d cores.\n", threadsSupported);
 
     arr = new uint8_t[SIZE];
-    printf("The item at index 42 is: %d\n", arr[42]);
+    printf("The item at index 42 is: %d!!!\n", arr[42]);
 
     // Create thread tracking objets, these are NOT threads themselves
     printf("preThreads");
