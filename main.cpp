@@ -44,8 +44,8 @@ void workForCrew(uint8_t threadID)
         unsigned int localWorkerNumber = workerNumber;
 
         myMutex.lock();
-        startIndex = workerNumber * SIZE / threadsSupported * 10;
-        endIndex = (workerNumber + 1) * SIZE / threadsSupported * 10;
+        startIndex = workerNumber * SIZE / (threadsSupported * 10);
+        endIndex = (workerNumber + 1) * SIZE / (threadsSupported * 10);
         workerNumber++;
         myMutex.unlock();
 
@@ -71,8 +71,8 @@ void workForCrewCasting(uint8_t threadID)
         unsigned int localWorkerNumber = workerNumber;
 
         myMutex.lock();
-        startIndex = workerNumber * SIZE / threadsSupported * 10;
-        endIndex = (workerNumber + 1) * SIZE / threadsSupported * 10;
+        startIndex = workerNumber * SIZE / (threadsSupported * 10);
+        endIndex = (workerNumber + 1) * SIZE / (threadsSupported * 10);
         workerNumber++;
         myMutex.unlock();
 
@@ -349,8 +349,8 @@ void startArray()
         localWorkerNumber = workerNumber++;
         myMutex.unlock();
 
-        startIndex = localWorkerNumber * SIZE / threadsSupported * 10;
-        endIndex = (localWorkerNumber + 1) * SIZE / threadsSupported * 10;
+        startIndex = localWorkerNumber * SIZE / (threadsSupported * 10);
+        endIndex = (localWorkerNumber + 1) * SIZE / (threadsSupported * 10);
 
         if (localWorkerNumber < threadsSupported * 10)
         {
