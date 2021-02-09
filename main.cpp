@@ -204,6 +204,7 @@ void workerCrewSetup(thread *threads)
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::nano> running_time = end - start;
     times.push_back(running_time.count());
+    workerNumber = 0;
 
     //-----------------------------------------------
     //Casting
@@ -222,6 +223,7 @@ void workerCrewSetup(thread *threads)
     end = std::chrono::high_resolution_clock::now();
     running_time = end - start;
     times.push_back(running_time.count());
+    workerNumber = 0;
 
     //-----------------------------------------------
     //Loop Unrolling
@@ -239,6 +241,7 @@ void workerCrewSetup(thread *threads)
     end = std::chrono::high_resolution_clock::now();
     running_time = end - start;
     times.push_back(running_time.count());
+    workerNumber = 0;
 
     //-----------------------------------------------
     //Loop Unrolling 20
