@@ -376,9 +376,9 @@ int main()
     printf("The item at index 42 is: %d!!!\n", arr[42]);
 
     // Create thread tracking objets, these are NOT threads themselves
-    printf("preThreads");
+    printf("preThreads\n");
     thread *threads = new thread[threadsSupported];
-    printf("made it to thread init");
+    printf("made it to thread init\n");
     // initializing the array
     for (int i = 0; i < threadsSupported; i++)
     {
