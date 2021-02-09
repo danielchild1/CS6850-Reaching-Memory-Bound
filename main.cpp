@@ -244,7 +244,6 @@ void columnMajorWork(uint8_t threadID)
 {
     uint64_t localResult = 0;
 
-
     // Assume that every thread starts its second dimension index at 0 to its max
     // Each thread starts its first dimension based on math
     uint16_t shrinkSize = 128;
@@ -377,23 +376,25 @@ int main()
         threads[i].join();
     }
 
+    printf("\n\nTask                        Time\n");
     singleThreadRow();
-    singleThreadColumn();
-    multiRowMajor(threads);
-    multiColumnMajor(threads);
-    workerCrewSetup(threads);
-
-    printf("\n\nTask                      Time\n");
     printf("Single thread row major:      %f\n", times[0]);
+
+    singleThreadColumn();
     printf("Single thread column major:   %f\n", times[1]);
+
+    multiRowMajor(threads);
     printf("Multi-threaded row major:     %f\n", times[2]);
+
+    multiColumnMajor(threads);
     printf("Multi-threaded column major:  %f\n", times[3]);
+
+    workerCrewSetup(threads);
     printf("Worker Crew:                  %f\n", times[4]);
     printf("worker Crew casting:          %f\n", times[5]);
     printf("Loop unrolling 4:             %f\n", times[6]);
     printf("Loop unrolling 20:            %f\n", times[7]);
 
-    
     delete[] threads;
     delete[] arr;
     return 0;
