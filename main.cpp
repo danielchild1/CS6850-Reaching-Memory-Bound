@@ -11,8 +11,8 @@ using std::vector;
 
 const uint64_t SIZE = 1024 * 1024 * 1024 * 100ULL; // 100 GB!
 unsigned int threadsSupported = std::thread::hardware_concurrency();
-const uint64_t NUM_ROWS = (1024 * 1024);
-const uint64_t NUM_COLS = (1024 * 100);
+const uint64_t NUM_ROWS = (1024* 1024); // * 1024
+const uint64_t NUM_COLS = (1024 * 100);// * 100
 
 uint8_t *arr{nullptr};
 uint8_t *result{0};
@@ -336,11 +336,9 @@ void singleThreadRow()
 
     uint64_t localResult = 0;
 
-    for (uint8_t r = 0; r < NUM_ROWS; r++)
+    for (uint64_t r = 0; r < NUM_ROWS; r++)
     {
-
         for (uint64_t c = 0; c < NUM_COLS; c++)
-
         {
             localResult += arr[r * NUM_COLS + c];
         }
