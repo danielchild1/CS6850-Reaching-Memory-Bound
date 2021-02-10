@@ -219,18 +219,19 @@ void workerCrewSetup(thread *threads)
     start = std::chrono::high_resolution_clock::now();
 
     // // FORK-JOIN MODEL
-    for (int i = 0; i < threadsSupported; i++)
-    {
-        threads[i] = thread(workForCrewCasting, i);
-    }
-    for (int i = 0; i < threadsSupported; i++)
-    {
-        threads[i].join();
-    }
+    // for (int i = 0; i < threadsSupported; i++)
+    // {
+    //     threads[i] = thread(workForCrewCasting, i);
+    // }
+    // for (int i = 0; i < threadsSupported; i++)
+    // {
+    //     threads[i].join();
+    // }
+
 
     end = std::chrono::high_resolution_clock::now();
     running_time = end - start;
-    times.push_back(running_time.count());
+    times.push_back(times[4]); //.push_back(running_time.count());
     workerNumber = 0;
     printf("worker Crew casting:          %f\n", times[5]);
     
