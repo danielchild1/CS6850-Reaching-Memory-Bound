@@ -83,9 +83,9 @@ void workForCrewCasting(uint8_t threadID)
 
         if (localWorkerNumber < threadsSupported * 10)
         {
-            for (uint64_t r = startIndex; r < endIndex; r += 8)
+            for (uint64_t r = startIndex; r < endIndex; r ++)
             {
-                for (uint64_t c = 0; c < NUM_COLS; c++)
+                for (uint64_t c = 0; c < NUM_COLS; c += 8)
                 {
                     // Make a copy of 8 bytes.
                     uint64_t buffer = *(reinterpret_cast<uint64_t *>(&arr[r * NUM_COLS + c]));
