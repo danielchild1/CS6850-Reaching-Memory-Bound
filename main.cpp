@@ -212,6 +212,7 @@ void workerCrewSetup(thread *threads)
     std::chrono::duration<double, std::milli> running_time = end - start;
     times.push_back(running_time.count());
     workerNumber = 0;
+    printf("Worker Crew:                  %f\n", times[4]);
 
     //-----------------------------------------------
     //Casting
@@ -231,6 +232,8 @@ void workerCrewSetup(thread *threads)
     running_time = end - start;
     times.push_back(running_time.count());
     workerNumber = 0;
+    printf("worker Crew casting:          %f\n", times[5]);
+    
 
     //-----------------------------------------------
     //Loop Unrolling
@@ -249,6 +252,8 @@ void workerCrewSetup(thread *threads)
     running_time = end - start;
     times.push_back(running_time.count());
     workerNumber = 0;
+    printf("Loop unrolling 4:             %f\n", times[6]);
+   
 
     //-----------------------------------------------
     //Loop Unrolling 20
@@ -266,6 +271,7 @@ void workerCrewSetup(thread *threads)
     end = std::chrono::high_resolution_clock::now();
     running_time = end - start;
     times.push_back(running_time.count());
+     printf("Loop unrolling 20:            %f\n", times[7]);
 }
 
 void columnMajorWork(uint8_t threadID)
@@ -432,10 +438,8 @@ int main()
     printf("Multi-threaded column major:  %f\n", times[3]);
 
     workerCrewSetup(threads);
-    printf("Worker Crew:                  %f\n", times[4]);
-    printf("worker Crew casting:          %f\n", times[5]);
-    printf("Loop unrolling 4:             %f\n", times[6]);
-    printf("Loop unrolling 20:            %f\n", times[7]);
+    
+    
 
     delete[] threads;
     delete[] arr;
