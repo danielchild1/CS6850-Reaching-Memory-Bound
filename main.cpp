@@ -83,22 +83,24 @@ void workForCrewCasting(uint8_t threadID)
 
         if (localWorkerNumber < threadsSupported * 10)
         {
-            for (uint16_t r = 0; r < 16; r += 8)
+            for (uint16_t r = startIndex; r < endIndex; r += 8)
             {
+                for (uint64_t c = 0; c < NUM_COLS; c++)
+                {
+                    // Make a copy of 8 bytes.
+                    uint64_t buffer = *(reinterpret_cast<uint64_t *>(&arr[r * NUM_COLS + c]));
 
-                // Make a copy of 8 bytes.
-                uint64_t buffer = *(reinterpret_cast<uint64_t *>(&arr[i]));
+                    uint8_t *bufferArray = reinterpret_cast<uint8_t *>(&buffer);
+                    localResult += bufferArray[0];
+                    localResult += bufferArray[1];
+                    localResult += bufferArray[2];
+                    localResult += bufferArray[3];
+                    localResult += bufferArray[4];
+                    localResult += bufferArray[5];
+                    localResult += bufferArray[6];
+                    localResult += bufferArray[7];
 
-                uint8_t *bufferArray = reinterpret_cast<uint8_t *>(&buffer);
-                printf("Read 8 bytes\n");
-                printf("%" PRId8 "\n", bufferArray[0]);
-                printf("%" PRId8 "\n", bufferArray[1]);
-                printf("%" PRId8 "\n", bufferArray[2]);
-                printf("%" PRId8 "\n", bufferArray[3]);
-                printf("%" PRId8 "\n", bufferArray[4]);
-                printf("%" PRId8 "\n", bufferArray[5]);
-                printf("%" PRId8 "\n", bufferArray[6]);
-                printf("%" PRId8 "\n", bufferArray[7]);
+                }
             }
         }
         else
@@ -113,22 +115,27 @@ void workForCrewLoopUnrolling(uint8_t threadID)
     while (workerNumber < threadsSupported * 10)
     {
         uint64_t startIndex, endIndex, localResult = 0;
-        unsigned int localWorkerNumber = workerNumber;
+        unsigned int localWorkerNumber;
 
         myMutex.lock();
+        localWorkerNumber = workerNumber++;
+        myMutex.unlock();
+
         startIndex = workerNumber * SIZE / threadsSupported * 10;
         endIndex = (workerNumber + 1) * SIZE / threadsSupported * 10;
-        workerNumber++;
-        myMutex.unlock();
 
         if (localWorkerNumber < threadsSupported * 10)
         {
-            for (uint64_t i = startIndex; i < endIndex; i += 4)
+            for (uint64_t r = startIndex; r < endIndex; r += 4)
             {
-                localResult += (uint64_t)arr[i];
-                localResult += (uint64_t)arr[i + 1];
-                localResult += (uint64_t)arr[i + 2];
-                localResult += (uint64_t)arr[i + 3];
+                for (uint64_t c = 0; c < NUM_COLS; c++)
+                {
+                //localResult += arr[r * NUM_COLS + c];
+                localResult += (uint64_t)arr[r * NUM_COLS + c];
+                localResult += (uint64_t)arr[r * NUM_COLS + c+ 1];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 2];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 3];
+                }
             }
         }
         else
@@ -153,28 +160,31 @@ void workForCrewLoopUnrolling20(uint8_t threadID)
 
         if (localWorkerNumber < threadsSupported * 10)
         {
-            for (uint64_t i = startIndex; i < endIndex; i += 20)
+            for (uint64_t r = startIndex; r < endIndex; r += 20)
             {
-                localResult += (uint64_t)arr[i];
-                localResult += (uint64_t)arr[i + 1];
-                localResult += (uint64_t)arr[i + 2];
-                localResult += (uint64_t)arr[i + 3];
-                localResult += (uint64_t)arr[i + 4];
-                localResult += (uint64_t)arr[i + 5];
-                localResult += (uint64_t)arr[i + 6];
-                localResult += (uint64_t)arr[i + 7];
-                localResult += (uint64_t)arr[i + 8];
-                localResult += (uint64_t)arr[i + 9];
-                localResult += (uint64_t)arr[i + 10];
-                localResult += (uint64_t)arr[i + 11];
-                localResult += (uint64_t)arr[i + 12];
-                localResult += (uint64_t)arr[i + 13];
-                localResult += (uint64_t)arr[i + 14];
-                localResult += (uint64_t)arr[i + 15];
-                localResult += (uint64_t)arr[i + 16];
-                localResult += (uint64_t)arr[i + 17];
-                localResult += (uint64_t)arr[i + 18];
-                localResult += (uint64_t)arr[i + 19];
+                for (uint64_t c = 0; c < NUM_COLS; c++)
+                {
+                localResult += (uint64_t)arr[r * NUM_COLS + c];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 1];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 2];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 3];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 4];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 5];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 6];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 7];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 8];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 9];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 10];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 11];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 12];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 13];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 14];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 15];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 16];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 17];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 18];
+                localResult += (uint64_t)arr[r * NUM_COLS + c + 19];
+                }
             }
         }
         else
@@ -362,7 +372,6 @@ void singleThreadColumn()
 
 void startArray()
 {
-    printf("Inside start array\n");
     while (workerNumber < threadsSupported * 10)
     {
         uint64_t startIndex, endIndex;
@@ -381,7 +390,6 @@ void startArray()
             {
                 arr[i] = 2;
             }
-            printf("finished last for loop inside of if statemnt\n");
         }
         else
         {
@@ -396,12 +404,11 @@ int main()
     printf("This machine has %d cores.\n", threadsSupported);
 
     arr = new uint8_t[SIZE];
-    printf("The item at index 42 is: %d!!!\n", arr[42]);
+    printf("The item at index 42 is: %d!!!\n\n", arr[42]);
 
     // Create thread tracking objets, these are NOT threads themselves
-    printf("preThreads\n");
     thread *threads = new thread[threadsSupported];
-    printf("made it to thread init\n");
+
     // initializing the array
     for (int i = 0; i < threadsSupported; i++)
     {
