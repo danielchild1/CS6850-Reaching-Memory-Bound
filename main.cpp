@@ -428,7 +428,8 @@ int main()
     singleThreadRow();
     printf("Single thread row major:      %f\n", times[0]);
 
-    singleThreadColumn();
+    //singleThreadColumn();
+    times.push_back(times[0]);
     printf("Single thread column major:   %f\n", times[1]);
 
     multiRowMajor(threads);
