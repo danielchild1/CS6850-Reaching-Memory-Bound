@@ -354,7 +354,7 @@ void singleThreadColumn()
     auto start = std::chrono::high_resolution_clock::now();
     uint64_t localResult = 0;
 
-    for (uint8_t c = 0; c < NUM_COLS; c++)
+    for (uint64_t c = 0; c < NUM_COLS; c++)
     {
 
         for (uint64_t r = 0; r < NUM_ROWS; r++)
