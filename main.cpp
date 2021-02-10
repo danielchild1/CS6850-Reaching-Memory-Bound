@@ -83,7 +83,7 @@ void workForCrewCasting(uint8_t threadID)
 
         if (localWorkerNumber < threadsSupported * 10)
         {
-            for (uint16_t r = startIndex; r < endIndex; r += 8)
+            for (uint64_t r = startIndex; r < endIndex; r += 8)
             {
                 for (uint64_t c = 0; c < NUM_COLS; c++)
                 {
