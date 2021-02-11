@@ -126,9 +126,9 @@ void workForCrewLoopUnrolling(uint8_t threadID)
 
         if (localWorkerNumber < threadsSupported * 10)
         {
-            for (uint64_t r = startIndex; r < endIndex; r += 4)
+            for (uint64_t r = startIndex; r < endIndex; r ++)
             {
-                for (uint64_t c = 0; c < NUM_COLS; c++)
+                for (uint64_t c = 0; c < NUM_COLS; c += 4)
                 {
                 //localResult += arr[r * NUM_COLS + c];
                 localResult += (uint64_t)arr[r * NUM_COLS + c];
@@ -160,9 +160,9 @@ void workForCrewLoopUnrolling20(uint8_t threadID)
 
         if (localWorkerNumber < threadsSupported * 10)
         {
-            for (uint64_t r = startIndex; r < endIndex; r += 20)
+            for (uint64_t r = startIndex; r < endIndex; r ++)
             {
-                for (uint64_t c = 0; c < NUM_COLS; c++)
+                for (uint64_t c = 0; c < NUM_COLS; c += 20)
                 {
                 localResult += (uint64_t)arr[r * NUM_COLS + c];
                 localResult += (uint64_t)arr[r * NUM_COLS + c + 1];
@@ -219,19 +219,18 @@ void workerCrewSetup(thread *threads)
     start = std::chrono::high_resolution_clock::now();
 
     // // FORK-JOIN MODEL
-    // for (int i = 0; i < threadsSupported; i++)
-    // {
-    //     threads[i] = thread(workForCrewCasting, i);
-    // }
-    // for (int i = 0; i < threadsSupported; i++)
-    // {
-    //     threads[i].join();
-    // }
-
+    for (int i = 0; i < threadsSupported; i++)
+    {
+        threads[i] = thread(workForCrewCasting, i);
+    }
+    for (int i = 0; i < threadsSupported; i++)
+    {
+        threads[i].join();
+    }
 
     end = std::chrono::high_resolution_clock::now();
     running_time = end - start;
-    times.push_back(times[4]); //.push_back(running_time.count());
+    times.push_back(running_time.count());
     workerNumber = 0;
     printf("worker Crew casting:          %f\n", times[5]);
     
@@ -429,8 +428,7 @@ int main()
     singleThreadRow();
     printf("Single thread row major:      %f\n", times[0]);
 
-    //singleThreadColumn();
-    times.push_back(times[0]);
+    singleThreadColumn();
     printf("Single thread column major:   %f\n", times[1]);
 
     multiRowMajor(threads);

@@ -29,3 +29,4 @@ Loop unrolling 4:             30088.287020
 Loop unrolling 20:            6172.732475
 dc84885@morpheus:~/CS6850-Reaching-Memory-Bound$ ^C
 dc84885@morpheus:~/CS6850-Reaching-Memory-Bound$ 
+    
