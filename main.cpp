@@ -231,7 +231,7 @@ void workerCrewSetup(thread *threads)
     std::chrono::duration<double, std::milli> running_time = end - start;
     times.push_back(running_time.count());
     workerNumber = 0;
-    printf("Worker Crew:                  %f\n", times[4]);
+    printf("Worker Crew:                  %f\n", times[1]);
 
     //-----------------------------------------------
     //Casting
@@ -251,7 +251,7 @@ void workerCrewSetup(thread *threads)
     running_time = end - start;
     times.push_back(running_time.count());
     workerNumber = 0;
-    printf("worker Crew casting:          %f\n", times[5]);
+    printf("worker Crew casting:          %f\n", times[2]);
     
 
     //-----------------------------------------------
@@ -271,7 +271,7 @@ void workerCrewSetup(thread *threads)
     running_time = end - start;
     times.push_back(running_time.count());
     workerNumber = 0;
-    printf("Loop unrolling 4:             %f\n", times[6]);
+    printf("Loop unrolling 4:             %f\n", times[3]);
    
 
     //-----------------------------------------------
@@ -290,7 +290,7 @@ void workerCrewSetup(thread *threads)
     end = std::chrono::high_resolution_clock::now();
     running_time = end - start;
     times.push_back(running_time.count());
-     printf("Loop unrolling 20:            %f\n", times[7]);
+     printf("Loop unrolling 20:            %f\n", times[4]);
 }
 
 void columnMajorWork(uint8_t threadID)
@@ -457,20 +457,21 @@ int main()
     workerNumber = 0;
 
     printf("\n\nTask                        Time\n");
-    singleThreadRow();
-    printf("Single thread row major:      %f\n", times[0]);
+    // singleThreadRow();
+    // printf("Single thread row major:      %f\n", times[0]);
 
-    singleThreadColumn();
-    printf("Single thread column major:   %f\n", times[1]);
+    // singleThreadColumn();
+    // printf("Single thread column major:   %f\n", times[1]);
 
-    multiRowMajor(threads);
-    printf("Multi-threaded row major:     %f\n", times[2]);
+    // multiRowMajor(threads);
+    // printf("Multi-threaded row major:     %f\n", times[2]);
 
-    multiColumnMajor(threads);
-    printf("Multi-threaded column major:  %f\n", times[3]);
+    // multiColumnMajor(threads);
+    // printf("Multi-threaded column major:  %f\n", times[3]);
 
     workerCrewSetup(threads);
     
+    printf("%hhn\n", result);
     
 
     delete[] threads;
