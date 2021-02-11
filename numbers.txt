@@ -1,4 +1,4 @@
-dc84885@morpheus:~/CS6850-Reaching-Memory-Bound$ ./crap
+xxxxx@morpheus:~/CS6850-Reaching-Memory-Bound$ ./crap
 This machine has 64 cores.
 The item at index 42 is: 0!!!
 
@@ -12,7 +12,7 @@ Multi-threaded column major:  217504.791808
 Worker Crew:                  7007.801165
 worker Crew casting:          7007.801165
 Segmentation fault (core dumped)
-dc84885@morpheus:~/CS6850-Reaching-Memory-Bound$ ./main
+xxxxx@morpheus:~/CS6850-Reaching-Memory-Bound$ ./main
 This machine has 64 cores.
 The item at index 42 is: 0!!!
 
@@ -27,6 +27,6 @@ Worker Crew:                  4.528397
 worker Crew casting:          4.204091
 Loop unrolling 4:             30088.287020
 Loop unrolling 20:            6172.732475
-dc84885@morpheus:~/CS6850-Reaching-Memory-Bound$ ^C
-dc84885@morpheus:~/CS6850-Reaching-Memory-Bound$ 
+xxxxxx@morpheus:~/CS6850-Reaching-Memory-Bound$ ^C
+xxxxxx@morpheus:~/CS6850-Reaching-Memory-Bound$ 
     
