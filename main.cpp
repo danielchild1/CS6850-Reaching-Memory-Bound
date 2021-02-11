@@ -62,7 +62,12 @@ void workForCrew(uint8_t threadID)
         }
         else
         {
-            break;
+            // MUTEX
+    myMutex.lock();
+    // Run critical region of code
+    result += localResult;
+    myMutex.unlock();
+    break;
         }
     }
 }
@@ -104,7 +109,11 @@ void workForCrewCasting(uint8_t threadID)
             }
         }
         else
-        {
+        {   // MUTEX
+    myMutex.lock();
+    // Run critical region of code
+    result += localResult;
+    myMutex.unlock();
             break;
         }
     }
@@ -140,6 +149,11 @@ void workForCrewLoopUnrolling(uint8_t threadID)
         }
         else
         {
+            // MUTEX
+    myMutex.lock();
+    // Run critical region of code
+    result += localResult;
+    myMutex.unlock();
             break;
         }
     }
@@ -189,6 +203,11 @@ void workForCrewLoopUnrolling20(uint8_t threadID)
         }
         else
         {
+            // MUTEX
+    myMutex.lock();
+    // Run critical region of code
+    result += localResult;
+    myMutex.unlock();
             break;
         }
     }
@@ -350,6 +369,12 @@ void singleThreadRow()
         }
     }
 
+    // MUTEX
+    myMutex.lock();
+    // Run critical region of code
+    result += localResult;
+    myMutex.unlock();
+
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> running_time = end - start;
     times.push_back(running_time.count());
@@ -369,6 +394,13 @@ void singleThreadColumn()
             localResult += arr[r * NUM_COLS + c];
         }
     }
+
+    // MUTEX
+    myMutex.lock();
+    // Run critical region of code
+    result += localResult;
+    myMutex.unlock();
+
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> running_time = end - start;
     times.push_back(running_time.count());
